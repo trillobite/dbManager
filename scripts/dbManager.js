@@ -179,7 +179,7 @@ dbManager.form.render = function() {
         $('#'+txtBxModelNum.id).css({
             'color': 'black',
         });
-        $('#'+txtBxModelNum.id).val(' '); //clear the textbox.
+        $('#'+txtBxModelNum.id).val(''); //clear the textbox.
     }).event('blur', function() {
         if(!($('#'+txtBxModelNum.id).val())) { //if user entered nothing.
             $('#'+txtBxModelNum.id).css({ //set back to gray
@@ -200,7 +200,7 @@ dbManager.form.render = function() {
         $('#'+txtBxBrandTyp.id).css({
             'color': 'black',
         });
-        $('#'+txtBxBrandTyp.id).val(' '); //clear the textbox.
+        $('#'+txtBxBrandTyp.id).val(''); //clear the textbox.
     }).event('blur', function() {
         if(!($('#'+txtBxBrandTyp.id).val())) { //if user entered nothing.
             $('#'+txtBxBrandTyp.id).css({ //set back to gray
