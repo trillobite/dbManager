@@ -87,6 +87,69 @@ dbManager.form.main = $jConstruct('div').css({
     'display': 'inline-block',
 });
 
+dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp) {
+    console.log('queryResult:', queryResult);
+    var elemW = '250px';
+
+    var mainDiv = new $jConstruct('div', {
+        id: 'mainRender'
+    }).css({
+        'width': '300px',
+        'height': '250px',
+        'overflow': 'auto',
+        'font-family': 'arial',
+    });
+    
+    mainDiv.children = [];
+
+    var tile = function() {
+        return $jConstruct('div').event('click', function() {
+            var thisObj = arrdb.get(this.id);
+            $('#'+txtBxModelNum.id).val(thisObj.modelNumber);
+            $('#'+txtBxBrandTyp.id).val(thisObj.brand);
+        }).css({
+            'width': elemW,
+            'height': '50px',
+            'border': '1px solid black',
+            'border-radius': '3px',
+            'cursor': 'pointer',
+        });
+    };
+
+    var total = $jConstruct('div', {
+        text: 'total: ' + queryResult.length,
+    }).css({
+        'width': elemW,
+        'height': '20px',
+        //'border': '1px solid black',
+        //'border-radius': '3px',
+    });
+
+    mainDiv.addChild(total);
+
+    for(var i = 0; i < queryResult.length; ++i) {
+        var myDiv = new tile();
+        myDiv.modelNumber = queryResult[i].modelNum;
+        myDiv.brand = queryResult[i].brand;
+        myDiv.addChild($jConstruct('div', {
+            text: 'Model number: ' + queryResult[i].modelNum,
+        }).css({
+            'float': 'left',
+            'clear': 'left',
+        }));
+        myDiv.addChild($jConstruct('div', {
+            text: 'Brand: ' + queryResult[i].brand,
+        }).css({
+            'float': 'left',
+            'clear': 'left',
+        }));
+        mainDiv.addChild(myDiv);
+    }
+
+    return mainDiv;
+
+};
+
 dbManager.form.render = function() {
 
     var fileInputField = $jConstruct('input', {
@@ -154,14 +217,16 @@ dbManager.form.render = function() {
     var btnSearch = $jConstruct('button', { //for searching for objects.
         text: 'search',
     }).event('click', function() {
-        var setText = function(stamps) { //create the string that will show in the textarea.
-            var dbRes = dbManager.jsonToString(stamps).replace(/,/g , ", \n");
-            //dbRes.replace(/}/g, "} \n");
-            //dbRes.replace(/{/g, '{ \n');
-            var result = 'found: ' + stamps.length + '\n' + dbRes;
-            $('#' + txtArea.id).val(result);
-        }
-        $('#' + txtArea.id).val(' '); //clear the text area.
+        (function() {
+            var tmp = arrdb.get('mainRender');
+            if(tmp) {
+                tmp.remove({
+                    db: true, //to remove object from micronDB.
+                    all: true, //to remove all child objects contained in the jsonHTML object.
+                });
+                $('#mainRender').remove();
+            }
+        })();
         var model = (function() {
             var txt = $('#'+txtBxModelNum.id).val();
             if(txt) {
@@ -181,11 +246,17 @@ dbManager.form.render = function() {
             return undefined; //was either blank, or set to the default value, so return nothing.
         })();
         if(model && brand) {
-            setText(dbManager.findStamp(model, brand));
+            txtArea.children = [];
+            txtArea.addChild(dbManager.form.renderResult(dbManager.findStamp(model.trim(), brand.trim()), txtBxModelNum, txtBxBrandTyp));
+            txtArea.refresh();
         } else if(model) {
-            setText(dbManager.findByNumber(model));
+            txtArea.children = [];
+            txtArea.addChild(dbManager.form.renderResult(dbManager.findByNumber(model.trim()), txtBxModelNum, txtBxBrandTyp));
+            txtArea.refresh();
         } else if(brand) {
-            setText(dbManager.findByBrand(brand));
+            txtArea.children = [];
+            txtArea.addChild(dbManager.form.renderResult(dbManager.findByBrand(brand.trim()), txtBxModelNum, txtBxBrandTyp));
+            txtArea.refresh();
         }
     }).css({
         'float': 'left',
@@ -194,7 +265,16 @@ dbManager.form.render = function() {
     var btnSave = $jConstruct('button', { //for saving objects.
         text: 'save',
     }).event('click', function() {
-        $('#' + txtArea.id).val(' '); //clear the text area.
+        (function() {
+            var tmp = arrdb.get('mainRender');
+            if(tmp) {
+                tmp.remove({
+                    db: true, //to remove object from micronDB.
+                    all: true, //to remove all child objects contained in the jsonHTML object.
+                });
+                $('#mainRender').remove();
+            }
+        })();
         var model = (function() {
             var txt = $('#'+txtBxModelNum.id).val();
             if(txt) {
@@ -221,7 +301,16 @@ dbManager.form.render = function() {
     var btnRemove = $jConstruct('button', {
         text: 'remove',
     }).event('click', function() {
-        $('#' + txtArea.id).val(' '); //clear the text area.
+        (function() {
+            var tmp = arrdb.get('mainRender');
+            if(tmp) {
+                tmp.remove({
+                    db: true, //to remove object from micronDB.
+                    all: true, //to remove all child objects contained in the jsonHTML object.
+                });
+                $('#mainRender').remove();
+            }
+        })();
         var model = (function() {
             var txt = $('#'+txtBxModelNum.id).val();
             if(txt) {
@@ -250,11 +339,7 @@ dbManager.form.render = function() {
         'float': 'left',
     });
     
-    var txtArea = $jConstruct('textarea', {
-        rows: '10',
-        cols: '32',
-        name: 'outputField',
-    }).css({
+    var txtArea = $jConstruct('div').css({
         'float': 'left',
         'clear': 'left',  
     });
