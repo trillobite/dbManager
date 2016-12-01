@@ -3,7 +3,6 @@
 var myDB = new micronDB();
 
 var dbManager = {};
-dbManager.path = "file:///home/trillobite/Documents/gitProjects/miniDownloader";
 
 dbManager.parseJSONString = function(jsonStr) {
     return JSON.parse(jsonStr);
@@ -11,23 +10,6 @@ dbManager.parseJSONString = function(jsonStr) {
 
 dbManager.jsonToString = function(data) {
     return JSON.stringify(data);
-};
-
-//read text file into application.
-dbManager.readTextFile = function(file) {
-    var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function ()
-    {
-        if(rawFile.readyState === 4)
-        {
-            if(rawFile.status === 200 || rawFile.status == 0)
-            {
-                return rawFile.responseText;
-            }
-        }
-    }
-    rawFile.send(null);
 };
 
 // Function to download data to a file
@@ -98,45 +80,71 @@ dbManager.findStamp = function(modelNumber, brand) {
 };
 
 dbManager.form = {};
+
 dbManager.form.main = $jConstruct('div').css({
     'border': '1px solid black',
     'border-radius': '5px',
     'display': 'inline-block',
 });
+
 dbManager.form.render = function() {
+
     var fileInputField = $jConstruct('input', {
         type: 'file',
     }).event('change', function(event) {
 
-        var file = event.target.files[0];
+        var file = event.target.files[0]; //get file location.
 
         var reader = new FileReader();
         reader.onload = function(progressEvent){
-            var resultJSON = JSON.parse(this.result);
-            console.log(resultJSON);
+            var resultJSON = JSON.parse(this.result); //parse the file as JSON.
             for(var i = 0; i < resultJSON.length; ++i) {
-                myDB.hash(resultJSON[i]);
+                var dbObject = resultJSON[i];
+                dbObject.id = undefined; //we want to kill the existing id, so there won't be any conflicts.
+                myDB.hash(resultJSON[i]); //hasing it will generate a new id, since it's being added to the db.
             }
         };
         reader.readAsText(file);
-
-        //dbManager.path = event.target.baseURI.replace('index.html', $('#'+fileInputField.id).val());
-        //var data = dbManager.readTextFile(dbManager.path);
-        //console.log(data);
     }).css({
-        'visibility': 'hidden',
+        'visibility': 'hidden', //this object is hidden, and is triggered remotely.
     });
 
     var txtBxModelNum = $jConstruct('textbox', {
         text: 'model number',
+    }).event('focus', function() {
+        $('#'+txtBxModelNum.id).css({
+            'color': 'black',
+        });
+        $('#'+txtBxModelNum.id).val(' '); //clear the textbox.
+    }).event('blur', function() {
+        if(!($('#'+txtBxModelNum.id).val())) { //if user entered nothing.
+            $('#'+txtBxModelNum.id).css({ //set back to gray
+                'color': 'gray',
+            });
+            $('#'+txtBxModelNum.id).val('model number'); //set default value.
+        }
     }).css({
+        'color': 'gray',
         'float': 'left',
         'clear': 'left',  
     }); //where to type in the model number.
     
     var txtBxBrandTyp = $jConstruct('textbox', {
         text: 'brand',
+    }).event('focus', function() {
+        $('#'+txtBxBrandTyp.id).css({
+            'color': 'black',
+        });
+        $('#'+txtBxBrandTyp.id).val(' '); //clear the textbox.
+    }).event('blur', function() {
+        if(!($('#'+txtBxBrandTyp.id).val())) { //if user entered nothing.
+            $('#'+txtBxBrandTyp.id).css({ //set back to gray
+                'color': 'gray',
+            });
+            $('#'+txtBxBrandTyp.id).val('brand'); //set default value.
+        }
     }).css({
+        'color': 'gray',
         'float': 'left',
         'clear': 'left',
     }); //where to type in the brand.
@@ -144,7 +152,7 @@ dbManager.form.render = function() {
     var btnSearch = $jConstruct('button', { //for searching for objects.
         text: 'search',
     }).event('click', function() {
-        var setText = function(stamps) {
+        var setText = function(stamps) { //create the string that will show in the textarea.
             var dbRes = dbManager.jsonToString(stamps).replace(/,/g , ", \n");
             //dbRes.replace(/}/g, "} \n");
             //dbRes.replace(/{/g, '{ \n');
@@ -152,8 +160,24 @@ dbManager.form.render = function() {
             $('#' + txtArea.id).val(result);
         }
         $('#' + txtArea.id).val(' '); //clear the text area.
-        var model = $('#'+txtBxModelNum.id).val();
-        var brand = $('#'+txtBxBrandTyp.id).val();
+        var model = (function() {
+            var txt = $('#'+txtBxModelNum.id).val();
+            if(txt) {
+                if(txt != 'model number' && txt != ' ') { //if it's not the default value, return the value.
+                    return txt;
+                }
+            }
+            return undefined; //was either blank, or set to the default value, so return nothing.
+        })();
+        var brand = (function() {
+            var txt = $('#'+txtBxBrandTyp.id).val();
+            if(txt) {
+                if(txt != 'brand' && txt != ' ') { //if it's not the default value, return the value.
+                    return txt;
+                }
+            }
+            return undefined; //was either blank, or set to the default value, so return nothing.
+        })();
         if(model && brand) {
             setText(dbManager.findStamp(model, brand));
         } else if(model) {
@@ -169,8 +193,24 @@ dbManager.form.render = function() {
         text: 'save',
     }).event('click', function() {
         $('#' + txtArea.id).val(' '); //clear the text area.
-        var model = $('#'+txtBxModelNum.id).val();
-        var brand = $('#'+txtBxBrandTyp.id).val();
+        var model = (function() {
+            var txt = $('#'+txtBxModelNum.id).val();
+            if(txt) {
+                if(txt != 'model number' && txt != ' ') { //if it's not the default value, return the value.
+                    return txt;
+                }
+            }
+            return undefined; //was either blank, or set to the default value, so return nothing.
+        })();
+        var brand = (function() {
+            var txt = $('#'+txtBxBrandTyp.id).val();
+            if(txt) {
+                if(txt != 'brand' && txt != ' ') { //if it's not the default value, return the value.
+                    return txt;
+                }
+            }
+            return undefined; //was either blank, or set to the default value, so return nothing.
+        })();
         dbManager.addStamp(model, brand);
     }).css({
         'float': 'left',
@@ -180,17 +220,37 @@ dbManager.form.render = function() {
         text: 'remove',
     }).event('click', function() {
         $('#' + txtArea.id).val(' '); //clear the text area.
-        var model = $('#'+txtBxModelNum.id).val();
-        var brand = $('#'+txtBxBrandTyp.id).val();
-        var stamp = dbManager.findStamp(model, brand);
-        dbManager.removeStamp(stamp[0]);
+        var model = (function() {
+            var txt = $('#'+txtBxModelNum.id).val();
+            if(txt) {
+                if(txt != 'model number' && txt != ' ') { //if it's not the default value, return the value.
+                    return txt;
+                }
+            }
+            return undefined; //was either blank, or set to the default value, so return nothing.
+        })();
+        var brand = (function() {
+            var txt = $('#'+txtBxBrandTyp.id).val();
+            if(txt) {
+                if(txt != 'brand' && txt != ' ') { //if it's not the default value, return the value.
+                    return txt;
+                }
+            }
+            return undefined; //was either blank, or set to the default value, so return nothing.
+        })();
+        if(model && brand) { //must have both properties to prevent deleting something it shouldn't
+            var stamp = dbManager.findStamp(model, brand);
+            dbManager.removeStamp(stamp[0]);
+        } else {
+            alert('Must provide values for model and brand.');
+        }
     }).css({
         'float': 'left',
     });
     
     var txtArea = $jConstruct('textarea', {
-        rows: '5',
-        cols: '50',
+        rows: '10',
+        cols: '32',
         name: 'outputField',
     }).css({
         'float': 'left',
@@ -205,21 +265,26 @@ dbManager.form.render = function() {
         dbManager.saveTextFile(stringified, 'dbOutput', 'txt');
     }).css({
         'float': 'left',
-        //'clear': 'left',  
     });
 
     var btnOpenDB = $jConstruct('button', {
         text: 'openDB',
     }).event('click', function() {
-        $('#' + fileInputField.id).click();
+        if(dbManager.findAll().length) { //Usually you don't want to load a db file with db objects already existing in the project.
+            var r = window.confirm("You have objects currently in the DB! If you load in a DB file right now, you will have the objects currently in the DB, AND the new objects from the DB file. Are you sure you want to do this?");
+            if (r == true) {
+                $('#' + fileInputField.id).click();
+            } else {
+                alert('Please refresh the page if you wish to load in a DB file.');
+            } 
+        } else {
+            $('#' + fileInputField.id).click();
+        }
     }).css({
         'float': 'left',
-        //'clear': 'left',
     });
 
     var dataFields = $jConstruct('div').css({
-        'border': '1px solid black',
-        'border-radius': '3px',  
         'clear': 'left',
     });
     dataFields.addChild(fileInputField);
@@ -227,8 +292,6 @@ dbManager.form.render = function() {
     dataFields.addChild(txtBxBrandTyp);
 
     var dataFieldsButtons = $jConstruct('div').css({
-        'border': '1px solid black',
-        'border-radius': '3px',
         'float': 'left',
         'clear': 'left',
     });
@@ -236,10 +299,7 @@ dbManager.form.render = function() {
     dataFieldsButtons.addChild(btnSave);
     dataFieldsButtons.addChild(btnRemove);
 
-    var dataOutputs = $jConstruct('div').css({
-        'border': '1px solid black',
-        'border-radius': '3px',
-    });
+    var dataOutputs = $jConstruct('div');
     dataOutputs.addChild($jConstruct('div').css({
         'float': 'left',
         'clear': 'left',
