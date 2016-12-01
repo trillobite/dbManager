@@ -111,6 +111,7 @@ dbManager.form.render = function() {
 
     var txtBxModelNum = $jConstruct('textbox', {
         text: 'model number',
+        title: 'model number',
     }).event('focus', function() {
         $('#'+txtBxModelNum.id).css({
             'color': 'black',
@@ -131,6 +132,7 @@ dbManager.form.render = function() {
     
     var txtBxBrandTyp = $jConstruct('textbox', {
         text: 'brand',
+        title: 'brand',
     }).event('focus', function() {
         $('#'+txtBxBrandTyp.id).css({
             'color': 'black',
