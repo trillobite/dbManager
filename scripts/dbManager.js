@@ -234,7 +234,7 @@ dbManager.form.render = function() {
         var model = (function() {
             var txt = $('#'+txtBxModelNum.id).val();
             if(txt) {
-                if(txt != 'model number' && txt != ' ') { //if it's not the default value, return the value.
+                if(txt != 'model number' && txt != '') { //if it's not the default value, return the value.
                     return txt;
                 }
             }
@@ -243,7 +243,7 @@ dbManager.form.render = function() {
         var brand = (function() {
             var txt = $('#'+txtBxBrandTyp.id).val();
             if(txt) {
-                if(txt != 'brand' && txt != ' ') { //if it's not the default value, return the value.
+                if(txt != 'brand' && txt != '') { //if it's not the default value, return the value.
                     return txt;
                 }
             }
@@ -282,7 +282,7 @@ dbManager.form.render = function() {
         var model = (function() {
             var txt = $('#'+txtBxModelNum.id).val();
             if(txt) {
-                if(txt != 'model number' && txt != ' ') { //if it's not the default value, return the value.
+                if(txt != 'model number' && txt != '') { //if it's not the default value, return the value.
                     return txt;
                 }
             }
@@ -291,13 +291,17 @@ dbManager.form.render = function() {
         var brand = (function() {
             var txt = $('#'+txtBxBrandTyp.id).val();
             if(txt) {
-                if(txt != 'brand' && txt != ' ') { //if it's not the default value, return the value.
+                if(txt != 'brand' && txt != '') { //if it's not the default value, return the value.
                     return txt;
                 }
             }
             return undefined; //was either blank, or set to the default value, so return nothing.
         })();
-        dbManager.addStamp(model, brand);
+        if(model && brand) {
+            dbManager.addStamp(model, brand);
+        } else {
+            alert('Need both model and brand feilds before saving.');  
+        }
     }).css({
         'float': 'left',
     });
@@ -318,7 +322,7 @@ dbManager.form.render = function() {
         var model = (function() {
             var txt = $('#'+txtBxModelNum.id).val();
             if(txt) {
-                if(txt != 'model number' && txt != ' ') { //if it's not the default value, return the value.
+                if(txt != 'model number' && txt != '') { //if it's not the default value, return the value.
                     return txt;
                 }
             }
@@ -327,7 +331,7 @@ dbManager.form.render = function() {
         var brand = (function() {
             var txt = $('#'+txtBxBrandTyp.id).val();
             if(txt) {
-                if(txt != 'brand' && txt != ' ') { //if it's not the default value, return the value.
+                if(txt != 'brand' && txt != '') { //if it's not the default value, return the value.
                     return txt;
                 }
             }
