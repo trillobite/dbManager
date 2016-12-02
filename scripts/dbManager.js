@@ -85,6 +85,10 @@ dbManager.form.main = $jConstruct('div').css({
     'border': '1px solid black',
     'border-radius': '5px',
     'display': 'inline-block',
+    'position':'absolute',
+    'top':'50%',
+    'left':'50%',
+    'margin':'-100px 0 0 -100px',
 });
 
 dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp) {
