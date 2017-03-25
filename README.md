@@ -6,6 +6,8 @@ use
 
 Select openDB and select sampleDB which is included in this project. Type 4433 in the first textbox field (model number), clear the second text box (brand), and hit search. You can then enter a value in the textbox for brand, and hit save to generate a new entry. You can then click saveDB, if you wish to export a raw db file to load in at any time in the future.
 
+You can also use the wild card command, by using the * in any of the fields, in order to find all objects in the db.
+
 Requires jQuery, and jsonHTML (included).
 
 dbManager.js located within the scripts folder is what you want for your project.

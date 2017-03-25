@@ -38,6 +38,17 @@ dbManager.addStamp = function(modelNumber, brand) {
     });
 };
 
+dbManager.findAllByProperty = function(input) {
+    if(input) {
+        if(input == '*') {
+            return function(tmp) {
+                return tmp ? true : false;
+            };
+        }
+    }
+    return input;
+};
+
 dbManager.removeStamp = function(stamp) {
     myDB.remove(stamp.id);
 };
@@ -55,7 +66,7 @@ dbManager.findAll = function() {
 dbManager.findByNumber = function(modelNumber) {
     return myDB.query({
         where: {
-            modelNum: modelNumber,
+            modelNum: dbManager.findAllByProperty(modelNumber),
         },
     });
 };
@@ -63,7 +74,7 @@ dbManager.findByNumber = function(modelNumber) {
 dbManager.findByBrand = function(brand) {
     return myDB.query({
         where: {
-            brand: brand,
+            brand: dbManager.findAllByProperty(brand),
         },
     });
 };
@@ -72,8 +83,8 @@ dbManager.findStamp = function(modelNumber, brand) {
     return myDB.query({
         where: {
             $and: {
-                modelNum: modelNumber,
-                brand: brand,
+                modelNum: dbManager.findAllByProperty(modelNumber),
+                brand: dbManager.findAllByProperty(brand),
             },
         },
     });
@@ -221,7 +232,7 @@ dbManager.form.render = function() {
     var btnSearch = $jConstruct('button', { //for searching for objects.
         text: 'search',
     }).event('click', function() {
-        (function() {
+        (function() { //clears the mainRender div if it exists from a previous search!
             var tmp = arrdb.get('mainRender');
             if(tmp) {
                 tmp.remove({
