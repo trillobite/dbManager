@@ -31,6 +31,36 @@ dbManager.saveTextFile = function (data, filename, type) {
     }
 };
 
+dbManager.readFile = function(file, startByte, endByte) {
+    var dfd = new $.Deferred();
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+        if(evt.target.readyState == FileReader.DONE) {
+            dfd.resolve(evt.target); //resulting object is put into the resolve.
+        }
+    }
+    var blob = file.slice((parseInt(startByte) || 0), (parseInt(endByte) || file.size + 1) + 1);
+    reader.readAsDataURL(blob);
+    return dfd.promise();
+};
+
+dbManager.attachDroppable = function(obj) {
+    obj.addFunction(function() {
+        var thisObj = this;
+        $("#" + thisObj.id).filedrop({
+            maxfiles: 1,
+            maxfilesize: 5,
+            beforeSend: function(f) {
+                //console.log(f);
+                dbManager.readFile(f).done(function(obj) {
+                    console.log('the file', obj);
+                    //projFuncs.addImage(obj, fabCanvas, f.name);
+                });
+            },
+        });
+    });
+};
+
 dbManager.addStamp = function(modelNumber, brand) {
     myDB.hash({
         modelNum: modelNumber,
@@ -122,6 +152,19 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
             var thisObj = arrdb.get(this.id);
             $('#'+txtBxModelNum.id).val(thisObj.modelNumber);
             $('#'+txtBxBrandTyp.id).val(thisObj.brand);
+        }).addFunction(function(){
+            var thisObj = this;
+            $("#" + thisObj.id).filedrop({
+                maxfiles: 1,
+                maxfilesize: 5,
+                beforeSend: function(f) {
+                    //console.log(f);
+                    dbManager.readFile(f).done(function(obj) {
+                        console.log('the file', obj);
+                        //projFuncs.addImage(obj, fabCanvas, f.name);
+                    });
+                },
+            });
         }).css({
             'width': elemW,
             'height': '50px',
