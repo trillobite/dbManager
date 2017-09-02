@@ -46,7 +46,8 @@ dbManager.readFile = function(file, startByte, endByte) {
 
 dbManager.attachDroppable = function(obj) {
     obj.addFunction(function() {
-        var thisObj = this;
+        var thisObj = obj;
+        console.log('thisObj:', thisObj);
         $("#" + thisObj.id).filedrop({
             maxfiles: 1,
             maxfilesize: 5,
@@ -54,6 +55,17 @@ dbManager.attachDroppable = function(obj) {
                 //console.log(f);
                 dbManager.readFile(f).done(function(obj) {
                     console.log('the file', obj);
+                    thisObj.productImageValue = obj.result;
+                    var imgBox = $jConstruct('div').css({
+                        'float': 'right',
+                    });
+                    imgBox.addChild($jConstruct('img', {
+                        src: thisObj.productImageValue,
+                    }).css({
+                        'max-width':'80px',
+                        'max-height':'80px',
+                    }));
+                    imgBox.appendTo(thisObj);
                     //projFuncs.addImage(obj, fabCanvas, f.name);
                 });
             },
@@ -147,24 +159,17 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
     
     mainDiv.children = [];
 
+
+    /*
+        TILE
+        This is the main object, that appears as a tile
+        in the db results.
+    */
     var tile = function() {
-        return $jConstruct('div').event('click', function() {
+        var tmp = $jConstruct('div').event('click', function() {
             var thisObj = arrdb.get(this.id);
             $('#'+txtBxModelNum.id).val(thisObj.modelNumber);
             $('#'+txtBxBrandTyp.id).val(thisObj.brand);
-        }).addFunction(function(){
-            var thisObj = this;
-            $("#" + thisObj.id).filedrop({
-                maxfiles: 1,
-                maxfilesize: 5,
-                beforeSend: function(f) {
-                    //console.log(f);
-                    dbManager.readFile(f).done(function(obj) {
-                        console.log('the file', obj);
-                        //projFuncs.addImage(obj, fabCanvas, f.name);
-                    });
-                },
-            });
         }).css({
             'width': elemW,
             'height': '50px',
@@ -172,6 +177,8 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
             'border-radius': '3px',
             'cursor': 'pointer',
         });
+        dbManager.attachDroppable(tmp);
+        return tmp;
     };
 
     var total = $jConstruct('div', {
