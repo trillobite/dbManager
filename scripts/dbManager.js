@@ -136,7 +136,9 @@ dbManager.findStamp = function(modelNumber, brand) {
 
 dbManager.form = {};
 
-dbManager.form.main = $jConstruct('div').css({
+dbManager.form.main = $jConstruct('div', {
+    class: 'container',
+}).css({
     'border': '1px solid black',
     'border-radius': '5px',
     'display': 'inline-block',
@@ -152,10 +154,11 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
     var elemW = '250px';
 
     var mainDiv = new $jConstruct('div', {
-        id: 'mainRender'
+        id: 'mainRender',
+        class: 'row', //bootstrap css call.
     }).css({
-        'width': '300px',
-        'height': '250px',
+        //'width': '100%',
+        'height': '800px',
         'overflow': 'auto',
         'font-family': 'arial',
     });
@@ -169,16 +172,19 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
         in the db results.
     */
     var tile = function() {
-        var tmp = $jConstruct('div').event('click', function() {
+        var tmp = $jConstruct('div', {
+            class: 'col-lg-2', //bootstrap grid.
+        }).event('click', function() {
             var thisObj = arrdb.get(this.id);
             $('#'+txtBxModelNum.id).val(thisObj.modelNumber);
             $('#'+txtBxBrandTyp.id).val(thisObj.brand);
         }).css({
-            'width': elemW,
-            'height': '80px',
+            //'width': elemW,
+            'height': '200px',
             'border': '1px solid black',
             'border-radius': '3px',
             'cursor': 'pointer',
+            'font-size': '60%',
         });
         dbManager.attachDroppable(tmp);
         return tmp;
@@ -186,9 +192,12 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
 
     var total = $jConstruct('div', {
         text: 'total: ' + queryResult.length,
+        class: 'container',
     }).css({
-        'width': elemW,
+        //'width': elemW,
         'height': '20px',
+        'float': 'left',
+        'clear': 'left',
         //'border': '1px solid black',
         //'border-radius': '3px',
     });
@@ -207,7 +216,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
 
         //add the div to describe the model number of the product.
         myDiv.addChild($jConstruct('div', {
-            text: 'Model number: ' + queryResult[i].modelNum,
+            text: 'Number: ' + queryResult[i].modelNum,
         }).css({
             'float': 'left',
             'clear': 'left',
@@ -223,10 +232,11 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
 
         //add the area for the product image.
         var imgDiv = $jConstruct('div').css({
-            'float': 'right',
-            'width': '48px', //48px for the two 1px border.
-            'height': '48px', //48px for the two 1px borders.
-            'border': '1px solid black',
+            'float': 'left',
+            'clear': 'left',
+            'width': '80%', //48px for the two 1px border.
+            'height': '60%', //48px for the two 1px borders.
+            //'border': '1px solid black',
         });
 
         var tmpSrc = undefined;
@@ -242,8 +252,8 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
             id: 'projImg' + myDiv.indx,
             src: tmpSrc,
         }).css({
-            'max-width': '47px', //must be smaller than the 48px image box.
-            'max-height': '47px', //must be smaller than the 48px image box.
+            //'max-width': '47px', //must be smaller than the 48px image box.
+            'max-height': '100%', //must be smaller than the 48px image box.
         });
 
         imgDiv.addChild(prodImg); //add the image to the imgDiv.
@@ -452,9 +462,12 @@ dbManager.form.render = function() {
         'float': 'left',
     });
     
-    var txtArea = $jConstruct('div').css({
+    var txtArea = $jConstruct('div', {
+        class: 'container', //bootstrap css container style.
+    }).css({
         'float': 'left',
-        'clear': 'left',  
+        'clear': 'left',
+        //'width': '100%',
     });
     
     var btnSaveDB = $jConstruct('button', {
@@ -500,8 +513,12 @@ dbManager.form.render = function() {
     dataFieldsButtons.addChild(btnSave);
     dataFieldsButtons.addChild(btnRemove);
 
-    var dataOutputs = $jConstruct('div');
-    dataOutputs.addChild($jConstruct('div').css({
+    var dataOutputs = $jConstruct('div', {
+        class: 'container', //bootstrap css call.
+    });
+    dataOutputs.addChild($jConstruct('div',{
+        class: 'container',
+    }).css({
         'float': 'left',
         'clear': 'left',
     }).addChild(txtArea));
