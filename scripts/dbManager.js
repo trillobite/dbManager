@@ -60,7 +60,10 @@ dbManager.attachDroppable = function(obj) {
                 dbManager.readFile(f).done(function(obj) {
                     console.log('the file', obj);
                     thisObj.productImageValue = obj.result;
-
+                    //find the persisting db object.
+                    var dbObj = myDB.get(thisObj.dbid);
+                    //set the image value to this also, so it can be saved later.
+                    dbObj.productImageValue = obj.result;
                     //get the index of the tile, so we know which div to add the image to.
                     var indx = arrdb.get(thisObj.id).indx;
                     var img = arrdb.get('projImg'+indx); //get the image object to change.
@@ -143,6 +146,7 @@ dbManager.form.main = $jConstruct('div').css({
     //'margin':'-100px 0 0 -100px',
 });
 
+//where everything is rendered after there is a query into the db.
 dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp) {
     console.log('queryResult:', queryResult);
     var elemW = '250px';
@@ -197,6 +201,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
     for(var i = 0; i < queryResult.length; ++i) {
         var myDiv = new tile();
         myDiv.indx = i; //set the index of the object tile.
+        myDiv.dbid = queryResult[i].id; //set the id to this object equal to what is in the db.
         myDiv.modelNumber = queryResult[i].modelNum; //get the model number.
         myDiv.brand = queryResult[i].brand; //get the brand.
 
@@ -224,10 +229,18 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
             'border': '1px solid black',
         });
 
+        var tmpSrc = undefined;
+        //check if there is an image already defined for this object.
+        if(myDB.get(myDiv.dbid).hasOwnProperty('productImageValue')) {
+            tmpSrc = myDB.get(myDiv.dbid).productImageValue;
+        } else {
+            tmpSrc = './images/pictures.png';
+        }
+
         //the default image to show in the box.
         var prodImg = $jConstruct('img', {
             id: 'projImg' + myDiv.indx,
-            src: './images/pictures.png',
+            src: tmpSrc,
         }).css({
             'max-width': '47px', //must be smaller than the 48px image box.
             'max-height': '47px', //must be smaller than the 48px image box.
@@ -245,7 +258,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
 };
 
 dbManager.form.render = function() {
-
+    //where data is actually read, and hashed into myDB.
     var fileInputField = $jConstruct('input', {
         type: 'file',
     }).event('change', function(event) {
@@ -266,6 +279,7 @@ dbManager.form.render = function() {
         'visibility': 'hidden', //this object is hidden, and is triggered remotely.
     });
 
+    //where to type in the model number.
     var txtBxModelNum = $jConstruct('textbox', {
         text: 'model number',
         title: 'model number',
@@ -285,8 +299,9 @@ dbManager.form.render = function() {
         'color': 'gray',
         'float': 'left',
         'clear': 'left',  
-    }); //where to type in the model number.
+    });
     
+    //where to type in the brand.
     var txtBxBrandTyp = $jConstruct('textbox', {
         text: 'brand',
         title: 'brand',
@@ -306,7 +321,7 @@ dbManager.form.render = function() {
         'color': 'gray',
         'float': 'left',
         'clear': 'left',
-    }); //where to type in the brand.
+    });
     
     var btnSearch = $jConstruct('button', { //for searching for objects.
         text: 'search',
