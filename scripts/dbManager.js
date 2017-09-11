@@ -44,6 +44,10 @@ dbManager.readFile = function(file, startByte, endByte) {
     return dfd.promise();
 };
 
+dbManager.addImageToTile = function(obj) {
+    var thisObj = obj;
+};
+
 dbManager.attachDroppable = function(obj) {
     obj.addFunction(function() {
         var thisObj = obj;
@@ -56,17 +60,12 @@ dbManager.attachDroppable = function(obj) {
                 dbManager.readFile(f).done(function(obj) {
                     console.log('the file', obj);
                     thisObj.productImageValue = obj.result;
-                    var imgBox = $jConstruct('div').css({
-                        'float': 'right',
-                    });
-                    imgBox.addChild($jConstruct('img', {
-                        src: thisObj.productImageValue,
-                    }).css({
-                        'max-width':'80px',
-                        'max-height':'80px',
-                    }));
-                    imgBox.appendTo(thisObj);
-                    //projFuncs.addImage(obj, fabCanvas, f.name);
+
+                    //get the index of the tile, so we know which div to add the image to.
+                    var indx = arrdb.get(thisObj.id).indx;
+                    var img = arrdb.get('projImg'+indx); //get the image object to change.
+                    img.src = thisObj.productImageValue; //change the image source.
+                    img.refresh(); //refresh the object.
                 });
             },
         });
@@ -138,10 +137,10 @@ dbManager.form.main = $jConstruct('div').css({
     'border': '1px solid black',
     'border-radius': '5px',
     'display': 'inline-block',
-    'position':'absolute',
-    'top':'50%',
-    'left':'50%',
-    'margin':'-100px 0 0 -100px',
+    //'position':'absolute',
+    //'top':'50%',
+    //'left':'50%',
+    //'margin':'-100px 0 0 -100px',
 });
 
 dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp) {
@@ -172,7 +171,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
             $('#'+txtBxBrandTyp.id).val(thisObj.brand);
         }).css({
             'width': elemW,
-            'height': '50px',
+            'height': '80px',
             'border': '1px solid black',
             'border-radius': '3px',
             'cursor': 'pointer',
@@ -191,23 +190,53 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
     });
 
     mainDiv.addChild(total);
-
+    /*
+        This loop adds all the divs into the tile, which
+        will be displayed to the user.
+    */
     for(var i = 0; i < queryResult.length; ++i) {
         var myDiv = new tile();
-        myDiv.modelNumber = queryResult[i].modelNum;
-        myDiv.brand = queryResult[i].brand;
+        myDiv.indx = i; //set the index of the object tile.
+        myDiv.modelNumber = queryResult[i].modelNum; //get the model number.
+        myDiv.brand = queryResult[i].brand; //get the brand.
+
+        //add the div to describe the model number of the product.
         myDiv.addChild($jConstruct('div', {
             text: 'Model number: ' + queryResult[i].modelNum,
         }).css({
             'float': 'left',
             'clear': 'left',
         }));
+
+        //add the div to describe the brand of the product.
         myDiv.addChild($jConstruct('div', {
             text: 'Brand: ' + queryResult[i].brand,
         }).css({
             'float': 'left',
             'clear': 'left',
         }));
+
+        //add the area for the product image.
+        var imgDiv = $jConstruct('div').css({
+            'float': 'right',
+            'width': '48px', //48px for the two 1px border.
+            'height': '48px', //48px for the two 1px borders.
+            'border': '1px solid black',
+        });
+
+        //the default image to show in the box.
+        var prodImg = $jConstruct('img', {
+            id: 'projImg' + myDiv.indx,
+            src: './images/pictures.png',
+        }).css({
+            'max-width': '47px', //must be smaller than the 48px image box.
+            'max-height': '47px', //must be smaller than the 48px image box.
+        });
+
+        imgDiv.addChild(prodImg); //add the image to the imgDiv.
+        myDiv.addChild(imgDiv); //add the image div.
+
+
         mainDiv.addChild(myDiv);
     }
 
@@ -423,6 +452,7 @@ dbManager.form.render = function() {
         'float': 'left',
     });
 
+    //manages the opening of a db file.
     var btnOpenDB = $jConstruct('button', {
         text: 'openDB',
     }).event('click', function() {
