@@ -173,7 +173,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
     */
     var tile = function() {
         var tmp = $jConstruct('div', {
-            class: 'col-lg-2 col-md-3 col-xs-4', //bootstrap grid, and proper sizing.
+            class: 'dbObjHover col-lg-2 col-md-3 col-xs-4', //bootstrap grid, and proper sizing.
         }).event('click', function() {
             var thisObj = arrdb.get(this.id);
             $('#'+txtBxModelNum.id).val(thisObj.modelNumber);
@@ -218,6 +218,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
         myDiv.addChild($jConstruct('div', {
             text: 'Number: ' + queryResult[i].modelNum,
         }).css({
+            'overflow': 'hidden',
             'float': 'left',
             'clear': 'left',
         }));
@@ -226,6 +227,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
         myDiv.addChild($jConstruct('div', {
             text: 'Brand: ' + queryResult[i].brand,
         }).css({
+            'overflow': 'hidden',
             'float': 'left',
             'clear': 'left',
         }));
