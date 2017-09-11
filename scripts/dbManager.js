@@ -158,7 +158,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
         class: 'row', //bootstrap css call.
     }).css({
         //'width': '100%',
-        'height': '800px',
+        //'height': '800px',
         'overflow': 'auto',
         'font-family': 'arial',
     });
@@ -173,7 +173,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
     */
     var tile = function() {
         var tmp = $jConstruct('div', {
-            class: 'col-lg-2', //bootstrap grid.
+            class: 'col-lg-2 col-md-3 col-xs-4', //bootstrap grid, and proper sizing.
         }).event('click', function() {
             var thisObj = arrdb.get(this.id);
             $('#'+txtBxModelNum.id).val(thisObj.modelNumber);
@@ -252,8 +252,8 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
             id: 'projImg' + myDiv.indx,
             src: tmpSrc,
         }).css({
-            //'max-width': '47px', //must be smaller than the 48px image box.
-            'max-height': '100%', //must be smaller than the 48px image box.
+            'max-width': '100%', //make sure that the image won't overflow.
+            'max-height': '100%', //make sure that the image won't overflow.
         });
 
         imgDiv.addChild(prodImg); //add the image to the imgDiv.
