@@ -3,3 +3,8 @@
 .dbObjHover:hover {
 	background-color: gray;
 }
+
+.colorboxDisplayImage {
+	width: 500px;
+	height: 500px;
+}

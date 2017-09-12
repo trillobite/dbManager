@@ -253,6 +253,19 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
         var prodImg = $jConstruct('img', {
             id: 'projImg' + myDiv.indx,
             src: tmpSrc,
+        }).event('click', function() {
+            //$.colorbox({html:"<div id='colorboxProjImg' class='colorboxDisplayImage'>Welcome<div>"});
+            var myID = '#' + this.id;
+            console.log(myID);
+            $.colorbox({html:"<div id='colorboxProjImg' class='colorboxDisplayImage'></div>"});
+            var imgView = $jConstruct('div');
+            imgView.addChild($jConstruct('img', {
+                src: arrdb.get(this.id).src,
+            }).css({
+                'max-width': '400px',
+                'max-height': '400px',
+            }));
+            imgView.appendTo('#colorboxProjImg');
         }).css({
             'max-width': '100%', //make sure that the image won't overflow.
             'max-height': '100%', //make sure that the image won't overflow.
