@@ -203,16 +203,37 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
     });
 
     mainDiv.addChild(total);
+
+    /*
+        Copies the fields from one JSON object to another.
+        obj0: object to copy properties from.
+        obj1: object to copy properties to.
+        exclusions: properties to skip, and to not copy.
+    */
+    var propertyCopy = function(obj0, obj1, exclusions) {
+        for(var property in obj0) {
+            if(obj0.hasOwnProperty(property)) {
+                //if the property is not excluded
+                if(exclusions.indexOf(property) == -1) {
+                    obj1[property] = obj0[property];
+                }
+            }
+        }
+    }
+
     /*
         This loop adds all the divs into the tile, which
         will be displayed to the user.
     */
     for(var i = 0; i < queryResult.length; ++i) {
         var myDiv = new tile();
+
+        //get all the properties from the db, and add it to myDiv.
+        //copy properties from queryResult[i] to myDiv, and exclude the id property.
+        propertyCopy(queryResult[i], myDiv, ['id']);
+
         myDiv.indx = i; //set the index of the object tile.
-        myDiv.dbid = queryResult[i].id; //set the id to this object equal to what is in the db.
-        myDiv.modelNumber = queryResult[i].modelNum; //get the model number.
-        myDiv.brand = queryResult[i].brand; //get the brand.
+        myDiv.dbid = queryResult[i].id; //set the dbid to this object equal to what id is in the db.
 
         //add the div to describe the model number of the product.
         myDiv.addChild($jConstruct('div', {
@@ -253,33 +274,27 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
         var prodImg = $jConstruct('img', {
             id: 'projImg' + myDiv.indx,
             src: tmpSrc,
+            tileID: myDiv.id, //so I can find the parent div later.
         }).event('click', function() {
-            //$.colorbox({html:"<div id='colorboxProjImg' class='colorboxDisplayImage'>Welcome<div>"});
-            var myID = '#' + this.id;
-            console.log(myID);
-            $.colorbox({html:"<div id='colorboxProjImg' class='colorboxDisplayImage'></div>"});
-            var imgView = $jConstruct('div');
-            imgView.addChild($jConstruct('img', {
-                src: arrdb.get(this.id).src,
-            }).css({
-                'max-width': '400px',
-                'max-height': '400px',
-            }));
-            imgView.appendTo('#colorboxProjImg');
+            /*
+                must get the actual parent object, because myDiv can be a completely
+                different object after the loop has ended, and this function executes.
+            */
+            var thisObj = arrdb.get(this.id);
+            var parentObj = arrdb.get(thisObj.tileID);
+            productView(thisObj.src, parentObj); //display the product view [productView.js].
         }).css({
             'max-width': '100%', //make sure that the image won't overflow.
             'max-height': '100%', //make sure that the image won't overflow.
+            'border-radius': '10px', //make the edges of the image more round.
         });
 
         imgDiv.addChild(prodImg); //add the image to the imgDiv.
         myDiv.addChild(imgDiv); //add the image div.
-
-
         mainDiv.addChild(myDiv);
     }
 
     return mainDiv;
-
 };
 
 dbManager.form.render = function() {
