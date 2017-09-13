@@ -139,13 +139,9 @@ dbManager.form = {};
 dbManager.form.main = $jConstruct('div', {
     class: 'container',
 }).css({
-    'border': '1px solid black',
+    //'border': '1px solid black',
     'border-radius': '5px',
     'display': 'inline-block',
-    //'position':'absolute',
-    //'top':'50%',
-    //'left':'50%',
-    //'margin':'-100px 0 0 -100px',
 });
 
 //where everything is rendered after there is a query into the db.
@@ -157,8 +153,6 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
         id: 'mainRender',
         class: 'row', //bootstrap css call.
     }).css({
-        //'width': '100%',
-        //'height': '800px',
         'overflow': 'auto',
         'font-family': 'arial',
     });
@@ -179,7 +173,6 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
             $('#'+txtBxModelNum.id).val(thisObj.modelNumber);
             $('#'+txtBxBrandTyp.id).val(thisObj.brand);
         }).css({
-            //'width': elemW,
             'height': '200px',
             'border': '1px solid black',
             'border-radius': '3px',
@@ -194,12 +187,9 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
         text: 'total: ' + queryResult.length,
         class: 'container',
     }).css({
-        //'width': elemW,
         'height': '20px',
         'float': 'left',
         'clear': 'left',
-        //'border': '1px solid black',
-        //'border-radius': '3px',
     });
 
     mainDiv.addChild(total);
@@ -365,6 +355,7 @@ dbManager.form.render = function() {
     
     var btnSearch = $jConstruct('button', { //for searching for objects.
         text: 'search',
+        class: 'btn btn-primary btn-sm',
     }).event('click', function() {
         (function() { //clears the mainRender div if it exists from a previous search!
             var tmp = arrdb.get('mainRender');
@@ -413,6 +404,7 @@ dbManager.form.render = function() {
     
     var btnSave = $jConstruct('button', { //for saving objects.
         text: 'save',
+        class: 'btn btn-default btn-sm',
     }).event('click', function() {
         (function() {
             var tmp = arrdb.get('mainRender');
@@ -453,6 +445,7 @@ dbManager.form.render = function() {
 
     var btnRemove = $jConstruct('button', {
         text: 'remove',
+        class: 'btn btn-default btn-sm',
     }).event('click', function() {
         (function() {
             var tmp = arrdb.get('mainRender');
@@ -502,6 +495,7 @@ dbManager.form.render = function() {
     
     var btnSaveDB = $jConstruct('button', {
         text: 'saveDB',
+        class: 'btn btn-default btn-sm',
     }).event('click', function() {
         var objs = dbManager.findAll();
         var stringified = dbManager.jsonToString(objs);
@@ -513,6 +507,7 @@ dbManager.form.render = function() {
     //manages the opening of a db file.
     var btnOpenDB = $jConstruct('button', {
         text: 'openDB',
+        class: 'btn btn-default btn-sm',
     }).event('click', function() {
         if(dbManager.findAll().length) { //Usually you don't want to load a db file with db objects already existing in the project.
             var r = window.confirm("You have objects currently in the DB! If you load in a DB file right now, you will have the objects currently in the DB, AND the new objects from the DB file. Are you sure you want to do this?");
@@ -535,7 +530,9 @@ dbManager.form.render = function() {
     dataFields.addChild(txtBxModelNum);
     dataFields.addChild(txtBxBrandTyp);
 
-    var dataFieldsButtons = $jConstruct('div').css({
+    var dataFieldsButtons = $jConstruct('div', {
+        class: 'btn-group btn-group-sm'
+    }).css({
         'float': 'left',
         'clear': 'left',
     });
