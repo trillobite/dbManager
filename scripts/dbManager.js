@@ -481,6 +481,13 @@ dbManager.form.render = function() {
         'float': 'left',
     });
     
+    var btnAdd = $jConstruct('button', {
+        text: 'add',
+        class: 'btn btn-default btn-sm',
+    }).event('click', function() {
+        addProduct();
+    });
+
     var txtArea = $jConstruct('div', {
         class: 'container', //bootstrap css container style.
     }).css({
@@ -532,6 +539,7 @@ dbManager.form.render = function() {
     dataFieldsButtons.addChild(btnSearch);
     dataFieldsButtons.addChild(btnSave);
     dataFieldsButtons.addChild(btnRemove);
+    dataFieldsButtons.addChild(btnAdd);
 
     var dataOutputs = $jConstruct('div', {
         class: 'container', //bootstrap css call.

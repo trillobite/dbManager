@@ -40,5 +40,47 @@ var addProduct = function() {
 
     photoDrop.addChild(dropImg);
     photoDrop.appendTo('#colorboxAddProduct');
-    
+
+    var description = $jConstruct('textarea', {
+        text: 'Enter product description.',
+    }).css({
+        'height': '80px',
+        'width': '90%',
+        'float': 'left',
+        'clear': 'left',
+    });
+    description.appendTo('#colorboxAddProduct');
+
+    var modelNumber = $jConstruct('textbox', {
+        text: 'Model Number',
+    }).css({
+        'float': 'left',
+        'clear': 'left',
+    });
+    modelNumber.appendTo('#colorboxAddProduct');
+
+    var brandName = $jConstruct('textbox', {
+        text: 'Brand Name',
+    }).css({
+        'float': 'left',
+        'clear': 'left',
+    });
+    brandName.appendTo('#colorboxAddProduct');
+
+    var btnSubmit = $jConstruct('button', {
+        text: 'submit',
+        class: 'btn btn-default btn-sm',
+    }).event('click', function() {
+        tmpDBObj.brand = $('#'+brandName.id).val();
+        tmpDBObj.modelNum = $('#'+modelNumber.id).val();
+        tmpDBObj.details = $('#'+description.id).val();
+        myDB.hash(tmpDBObj);
+        $.colorbox.close();
+    }).css({
+        'float': 'left',
+        'clear': 'left',
+    });
+    btnSubmit.appendTo('#colorboxAddProduct');
+
+
 };
