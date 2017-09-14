@@ -138,10 +138,6 @@ dbManager.form = {};
 
 dbManager.form.main = $jConstruct('div', {
     class: 'container',
-}).css({
-    //'border': '1px solid black',
-    'border-radius': '5px',
-    'display': 'inline-block',
 });
 
 //where everything is rendered after there is a query into the db.
@@ -247,8 +243,8 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
         var imgDiv = $jConstruct('div').css({
             'float': 'left',
             'clear': 'left',
-            'width': '80%', //48px for the two 1px border.
-            'height': '60%', //48px for the two 1px borders.
+            'width': '100%',
+            'height': '80%',
             //'border': '1px solid black',
         });
 
@@ -260,7 +256,7 @@ dbManager.form.renderResult = function(queryResult, txtBxModelNum, txtBxBrandTyp
             tmpSrc = './images/pictures.png';
         }
 
-        //the default image to show in the box.
+        //the image to show in the box.
         var prodImg = $jConstruct('img', {
             id: 'projImg' + myDiv.indx,
             src: tmpSrc,
@@ -488,8 +484,8 @@ dbManager.form.render = function() {
     var txtArea = $jConstruct('div', {
         class: 'container', //bootstrap css container style.
     }).css({
-        'float': 'left',
-        'clear': 'left',
+        //'float': 'left',
+        //'clear': 'left',
         //'width': '100%',
     });
     
@@ -523,18 +519,15 @@ dbManager.form.render = function() {
         'float': 'left',
     });
 
-    var dataFields = $jConstruct('div').css({
-        'clear': 'left',
+    var dataFields = $jConstruct('div', {
+        class: 'container',
     });
     dataFields.addChild(fileInputField);
     dataFields.addChild(txtBxModelNum);
     dataFields.addChild(txtBxBrandTyp);
 
     var dataFieldsButtons = $jConstruct('div', {
-        class: 'btn-group btn-group-sm'
-    }).css({
-        'float': 'left',
-        'clear': 'left',
+        class: 'container btn-group btn-group-sm'
     });
     dataFieldsButtons.addChild(btnSearch);
     dataFieldsButtons.addChild(btnSave);

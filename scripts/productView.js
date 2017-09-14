@@ -1,3 +1,7 @@
+/*
+    productView allows the user to view all of the details about the selected object.
+*/
+
 //show the product view, when someone clicks on the image.
 var productView = function (imgData, mainObj) {
     var dbObj = myDB.get(mainObj.dbid);
